@@ -12,7 +12,57 @@ class WhatsAppController
 		// e transformar em camelCase cada um deles para uso posterior
 		this.loadElements();
 
+		// método para inciar todos os eventos criados
+		this.initEvents();
+
 	}
+
+	initEvents()
+	{
+
+		this.el.myPhoto.on('click', e=>{
+
+			this.closeAllLeftPanel();
+			this.el.panelEditProfile.show();
+			setTimeout(()=>{
+				this.el.panelEditProfile.addClass('open');
+			}, 300);
+	
+		});
+
+		this.el.btnNewContact.on('click', e=>{
+
+			this.closeAllLeftPanel();
+			this.el.panelAddContact.show();
+			setTimeout(()=>{	
+				this.el.panelAddContact.addClass('open');
+			}, 300);	
+
+		});
+
+		this.el.btnClosePanelEditProfile.on('click', e=>{
+
+			this.el.panelEditProfile.removeClass('open');
+
+		});
+
+		this.el.btnClosePanelAddContact.on('click', e=>{
+
+			this.el.panelAddContact.removeClass('open');
+
+		});
+
+	}
+
+	// método para esconder os paines que estejam acima do escolhido atualmente
+	// ,ou seja, modificar o css z-index do elemento HTML
+	closeAllLeftPanel() 
+	{
+
+		this.el.panelAddContact.hide();
+		this.el.panelEditProfile.hide();
+
+	};
 
 	loadElements()
 	{

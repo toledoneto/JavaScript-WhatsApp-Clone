@@ -4,8 +4,6 @@ class WhatsAppController
 	constructor()
 	{
 
-		console.log("WhatsAppController OK!");
-
 		this.elementsPrototype();
 
 		// metodo para carregar os 75 ids principais do projeto
@@ -85,6 +83,66 @@ class WhatsAppController
 			let formData = new FormData(this.el.formPanelAddContact);
 
 		});
+
+		// faz uma leitura de cada conversa do lado esq do app
+		this.el.contactsMessagesList.querySelectorAll('.contact-item').forEach(item =>{
+
+			item.on('click', e=>{
+
+				this.el.home.hide();
+				this.el.main.css({
+
+					display: 'flex'
+
+				});
+
+			});
+
+		});
+
+		this.el.btnAttach.on('click', e=>{
+
+			e.stopPropagation();
+			this.el.menuAttach.addClass('open');
+			// como o menu tem que fechar caso haja um click em qquer lugar fora do menu
+			// aplicamos um event no document como um todo. O bind ao fim da intrução
+			// serve para manipular o escopo da função que será chamada ao fim mantendo
+			// o escopo no whatsapp controller
+			document.addEventListener('click', this.closeMenuAttach.bind(this));
+
+		});
+
+		this.el.btnAttachPhoto.on('click', e=>{
+
+			console.log('photo');
+
+		});
+
+		this.el.btnAttachCamera.on('click', e=>{
+
+			console.log('camera');
+
+		});
+
+		this.el.btnAttachDocument.on('click', e=>{
+
+			console.log('Document');
+
+		});
+
+		this.el.btnAttachContact.on('click', e=>{
+
+			console.log('Contact');
+
+		});
+
+	}
+
+	closeMenuAttach(event)
+	{
+
+		document.removeEventListener('click', this.closeMenuAttach);
+		this.el.menuAttach.removeClass('open');
 
 	}
 

@@ -263,11 +263,30 @@ class WhatsAppController
 			
 			emoji.on('click', e=>{
 
-				console.log(emoji.dataset.unicode);
+				// clona tudo que estiver no método nativo do JS
+				let img = this.el.imgEmojiDefault.cloneNode();
+
+				img.style.cssText = emoji.style.cssText;
+				img.dataset.unicode = emoji.dataset.unicode;
+				img.alt = emoji.dataset.unicode;
+
+				// colocando tds as classe do emoji na cópia
+				emoji.classList.forEach(name=>{
+
+					img.classList.add(name);
+
+				});
+
+				// colocando no lugar de entrada de mgs
+				this.el.inputText.appendChild(img);
+
+				// dispatchEvent força um evento a acontecer de forma artificial
+				this.el.inputText.dispatchEvent(new Event('keyup'));
 
 			});
 
 		});
+
 
 	}
 

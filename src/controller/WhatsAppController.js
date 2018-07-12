@@ -141,6 +141,9 @@ class WhatsAppController
 
 			});
 
+			// renderiza a câmera "ao vivo" na tela do app antes de tirar uma ft
+			this._camera = new CameraController(this.el.videoCamera);
+
 		});
 
 		this.el.btnClosePanelCamera.on('click', e=>{

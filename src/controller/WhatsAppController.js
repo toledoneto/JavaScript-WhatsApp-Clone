@@ -213,6 +213,62 @@ class WhatsAppController
 
 		});
 
+		this.el.inputText.on('keypress', e=>{
+
+			if (e.key === 'Enter' && !e.ctrlKey) 
+			{
+
+				e.preventDefault();
+				this.el.btnSend.click();
+
+			}
+
+		});
+
+		this.el.inputText.on('keyup', e=>{
+
+			// verifica se existe algo escrito para esconder o placeholder
+			if (this.el.inputText.innerHTML.length) 
+			{
+
+				// esconde o placeholder
+				this.el.inputPlaceholder.hide();
+				// esconde btn do microfone
+				this.el.btnSendMicrophone.hide();
+				// mostra o btn e enviar
+				this.el.btnSend.show();
+
+			} else {
+
+				this.el.inputPlaceholder.show();
+				this.el.btnSendMicrophone.show();
+				this.el.btnSend.hide();
+			}
+
+		});
+
+		this.el.btnSend.on('click', e=>{
+
+			console.log(this.el.inputText.innerHTML);
+
+		});
+
+		this.el.btnEmojis.on('click', e=>{
+
+			this.el.panelEmojis.toggleClass('open');
+
+		});
+
+		this.el.panelEmojis.querySelectorAll('.emojik').forEach(emoji => {
+			
+			emoji.on('click', e=>{
+
+				console.log(emoji.dataset.unicode);
+
+			});
+
+		});
+
 	}
 
 	startRecordMicrophoneTime()

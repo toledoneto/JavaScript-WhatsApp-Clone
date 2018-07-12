@@ -277,8 +277,36 @@ class WhatsAppController
 
 				});
 
-				// colocando no lugar de entrada de mgs
-				this.el.inputText.appendChild(img);
+				let cursor = window.getSelection();
+
+				// verifica se o cursor n está focado em algum lugar ou n está sobre
+				// o campo de escrita de msg
+				if (!cursor.focusNode || !cursor.focusNode.id == 'input-text') 
+				{
+
+					this.el.inputText.focus();
+					cursor = window.getSelection();
+
+				}
+
+				// método que cria intervalos de seleção do cursor=>seleção de vários
+				// caracters com mouse
+				let range = document.createRange();
+
+				range = cursor.getRangeAt(0);
+
+				// se o user selecionar um range de char e clicar num emoji,
+				// deletamos o conteúdo e trocamos os chars selecionados pelo emoji
+				range.deleteContents();
+
+				let frag = document.createDocumentFragment();
+
+				frag.appendChild(img);
+
+				range.insertNode(frag);
+
+				// volta o cursor pro final da sentença
+				range.setStartAfter(img);
 
 				// dispatchEvent força um evento a acontecer de forma artificial
 				this.el.inputText.dispatchEvent(new Event('keyup'));

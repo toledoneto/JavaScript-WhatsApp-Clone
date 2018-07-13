@@ -13,6 +13,9 @@ export class CameraController
 
 		}).then(stream=>{
 
+			// criando var pra usar no método stop
+			this._stream = stream;
+
 			// fonte do vídeo criando obj tipo arqv com createObjectURL
 			this._videoEl.src = URL.createObjectURL(stream);
 
@@ -22,6 +25,17 @@ export class CameraController
 		}).catch(err=>{
 
 			console.error(err);
+
+		});
+
+	}
+
+	stop()
+	{
+
+		this._stream.getTracks().forEach(track=> {
+			
+			track.stop();
 
 		});
 

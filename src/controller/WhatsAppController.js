@@ -153,6 +153,7 @@ export class WhatsAppController
 
 			this.el.panelCamera.removeClass('open');
 			this.el.panelMessagesContainer.show();
+			this._camera.stop();
 
 		});
 

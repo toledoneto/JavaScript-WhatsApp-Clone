@@ -159,7 +159,36 @@ export class WhatsAppController
 
 		this.el.btnTakePicture.on('click', e=>{
 
-			console.log('take picture');
+			let dataURL = this._camera.takePicture();
+
+			// coloca no id da câmera a img obtida
+			this.el.pictureCamera.src = dataURL;
+			// mostra essa img na tela
+			this.el.pictureCamera.show();
+			// esconde o vídeo que estava a tela
+			this.el.videoCamera.hide();
+			// botão de retirar a ft
+			this.el.btnReshootPanelCamera.show();
+			// retira o botão de tirar a ft
+			this.el.containerTakePicture.hide();
+			// mostra o botão de enviar a ft
+			this.el.containerSendPicture.show();
+
+		});
+
+		this.el.btnReshootPanelCamera.on('click', e=>{
+
+			this.el.pictureCamera.hide();
+			this.el.videoCamera.show();
+			this.el.btnReshootPanelCamera.hide();
+			this.el.containerTakePicture.show();
+			this.el.containerSendPicture.hide();
+
+		});
+
+		this.el.btnSendPicture.on('click', e=>{
+
+			
 
 		});
 

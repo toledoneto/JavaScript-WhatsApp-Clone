@@ -41,4 +41,25 @@ export class CameraController
 
 	}
 
+	takePicture(mimeType = 'image/png')
+	{
+
+		// criando o canvas para capturar a ft
+		let canvas = document.createElement('canvas');
+
+		// setando os atributos do canvas de acordo com a img do vídeo
+		canvas.setAttribute('height', this._videoEl.videoHeight);
+		canvas.setAttribute('width', this._videoEl.videoWidth);
+
+		// colocando o contexto do canvas para tratar de imgs 2D
+		let context = canvas.getContext('2d');
+
+		// desenhando a img(qual img, posições iniciais, posições finais)
+		context.drawImage(this._videoEl, 0, 0, canvas.width, canvas.height);
+
+		// retornando um base64 da img com toDataURL
+		return canvas.toDataURL(mimeType);
+
+	}
+
 }

@@ -1,8 +1,13 @@
-export class MicrophoneController
+import {ClassEvent} from "../util/ClassEvent";
+
+export class MicrophoneController extends ClassEvent
 {
 
-	constructor(audioEl)
+	constructor()
 	{
+
+		// executa o contrutor da classe pai
+		super();
 
 		// pedindo permissão ao user para usar a cam
 		navigator.mediaDevices.getUserMedia({
@@ -19,6 +24,8 @@ export class MicrophoneController
 			audio.src = URL.createObjectURL(stream);
 
 			audio.play();
+
+			this.trigger('play', audio);
 
 		}).catch(err=>{
 

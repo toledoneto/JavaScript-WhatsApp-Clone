@@ -1,7 +1,7 @@
 export class ClassEvent
 {
 
-	contructor()
+	constructor()
 	{
 
 		this._events = {};

@@ -2,11 +2,12 @@
   "name": "",
   "version": "",
   "description": "[![Hcode Treinamentos](https://www.hcode.com.br/res/img/hcode-200x100.png)](https://www.hcode.com.br)",
-  "scripts":{
-  	"build": "webpack --config webpack.config.js",
-  	"start": "webpack-dev-server"
+  "scripts": {
+    "build": "webpack --config webpack.config.js",
+    "start": "webpack-dev-server"
   },
   "dependencies": {
+    "pdfjs-dist": "^2.0.489",
     "webpack": "^3.1.0",
     "webpack-dev-server": "^2.5.1"
   }

@@ -4,14 +4,22 @@ module.exports =
 {
 
 	// arquivo de entrada
-	entry: './src/app.js',
+	entry: {
+		// aplicação real
+		app: './src/app.js',
+		// configurando o path do worker
+		'pdf.worker': 'pdfjs-dist/build/pdf.worker.entry.js'
+	},
 
 	// arquivo criado com o bundle necessário
 	output: 
 	{
 
-		filename: 'bundle.js',
-		path: path.resolve(__dirname, '/dist'),
+		// o [name] cria 2 budles na memória, cada um apontando para as entries
+		// existentes no projeto. No caso serão app e pdf.worker, como podemos ver
+		// plas entries acima
+		filename: '[name].bundle.js',
+		path: path.join(__dirname, 'dist'),
 		publicPath: 'dist'
 
 	}

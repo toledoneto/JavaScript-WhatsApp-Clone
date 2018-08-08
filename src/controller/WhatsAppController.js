@@ -205,7 +205,7 @@ export class WhatsAppController
 
 		});
 
-		this.el.inputDocument.on('change', e => {
+		this.el.inputDocument.on('change', e=>{
 
 			// se houver algo selecionado para envio, envia o 1º apenas
 			if (this.el.inputDocument.files.length) 
@@ -215,13 +215,42 @@ export class WhatsAppController
 
 				this._documentPreviewController = new DocumentPreviewController(file);
 
-				this._documentPreviewController.getPreviewData().then(data => {
+				// se o arqv for uma img, entrará nesse then...
+				this._documentPreviewController.getPreviewData().then(result => {
 
-					console.log('ok', data);
+					this.el.imgPanelDocumentPreview.src = result.src;
+					this.el.infoPanelDocumentPreview.innerHTML = result.info;
+					this.el.imagePanelDocumentPreview.show();
+					this.el.filePanelDocumentPreview.hide();
 
-				}).catch(err => {
+				// ... senão, será pego pelo catch abaixo
+				}).catch(err=>{
 
-					console.log('err', err);
+					// para ver o tipo do arqv e colocar no switch abaixo
+					console.log(file);
+
+					switch (file.type) 
+					{
+						case 'application/vnd.ms-excel':
+							this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-xls';
+							break;
+
+						case 'application/vnd.ms-powerpoint':
+							this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-ppt';
+							break;
+
+						case 'application/vnd.msword':
+							this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-doc';
+							break;
+
+						default:
+							this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-generic';
+							break;
+					}
+
+					this.el.filenamePanelDocumentPreview.innerHTML = file.name;
+					this.el.imagePanelDocumentPreview.hide();
+					this.el.filePanelDocumentPreview.show();
 
 				});
 			}

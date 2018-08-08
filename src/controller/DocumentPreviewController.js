@@ -23,23 +23,28 @@ export class DocumentPreviewController
 					let reader = new FileReader();
 					
 					// caso haja sucesso na promessa
-					reader.onload = event => {
+					reader.onload = e => {
 
-						s(reader.result);
+						s({
+							src: reader.result,
+							info: this._file.name
+						});
 
-					};
+					}
 
 					// caso haja erro na promessa
-					reader.onerror = event =>{
+					reader.onerror = e =>{
 
-						f(event);
+						f(e);
 
-					};
+					}
 
 					reader.readAsDataURL(this._file);
 					break;
+
 				case 'application/pdf':
 					break;
+
 				default:
 					f();
 

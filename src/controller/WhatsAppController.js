@@ -1,5 +1,6 @@
 import {Format} from './../util/Format';
 import {CameraController} from './CameraController';
+import {DocumentPreviewController} from './DocumentPreviewController';
 
 export class WhatsAppController
 {
@@ -197,10 +198,33 @@ export class WhatsAppController
 			this.closeAllMainPanel();
 			this.el.panelDocumentPreview.addClass('open');
 			this.el.panelDocumentPreview.css({
-
 				'height':'calc(100% - 120px)'
-
 			});
+			// habilita a abertura de janela para selecionar itens do SO
+			this.el.inputDocument.click();
+
+		});
+
+		this.el.inputDocument.on('change', e => {
+
+			// se houver algo selecionado para envio, envia o 1º apenas
+			if (this.el.inputDocument.files.length) 
+			{
+
+				let file = this.el.inputDocument.files[0];
+
+				this._documentPreviewController = new DocumentPreviewController(file);
+
+				this._documentPreviewController.getPreviewData().then(data => {
+
+					console.log('ok', data);
+
+				}).catch(err => {
+
+					console.log('err', err);
+
+				});
+			}
 
 		});
 

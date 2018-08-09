@@ -33,22 +33,37 @@ export class WhatsAppController
 
 		this._firebase.initAuth().then(response => {
 			
-			this._user = new User();
+			this._user = new User(response.user.email);
 
-			let userRef = User.findByEmail(response.user.email);
+			this._user.on('datachange', data => {
 
-			// set é um método do firebase
-			userRef.set({
-				name: response.user.displayName,
-				email: response.user.email,
-				photo: response.user.photoURL
-			}).then(() => {
+				// colocando o nome do User na aba
+				document.querySelector('title').innerHTML = data.name + ' - WhatsApp Clone';
 
-				// a tela de conversa do app só volta a aprecer após estar no firebase
-				this.el.appContent.css({
+				// verificando se o user tem uma foto para colocá-la na tela
+				if (data.photo) 
+				{
+
+					// foto grande no perfil
+					let photo = this.el.imgPanelEditProfile;
+					photo.src = data.photo;
+					photo.show();
+					// apaga a foto padrão de user sem foto
+					this.el.imgDefaultPanelEditProfile.hide();
+
+					// foto pequena no topo da tela
+					let photo2 = this.el.myPhoto.querySelector('img');
+					photo2.src = data.photo;
+					photo2.show();
+
+				}
+
+			});
+
+			// a tela de conversa do app só volta a aprecer após estar no firebase
+			this.el.appContent.css({
 				display:'flex'
 
-				});
 			});
 
 		}).catch(err => {

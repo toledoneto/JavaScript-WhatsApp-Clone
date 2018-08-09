@@ -170,6 +170,26 @@ export class WhatsAppController
 
 				}
 
+				// ao clicar numa conversa, abre-se a tela de bate-papo
+				div.on('click', e =>{
+
+					this.el.activeName.innerHTML = contact.name;
+					this.el.activeStatus.innerHTML = contact.status;
+
+					if(contact.photo)
+					{
+						let img = this.el.activePhoto
+						img.src = contact.photo;
+						img.show();
+					}
+
+					this.el.home.hide();
+					this.el.main.css({
+						display: 'flex'
+					});
+
+				});
+
 				// coloca o elemento na tela
 				this.el.contactsMessagesList.appendChild(div);
 

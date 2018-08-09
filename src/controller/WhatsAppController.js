@@ -40,6 +40,9 @@ export class WhatsAppController
 				// colocando o nome do User na aba
 				document.querySelector('title').innerHTML = data.name + ' - WhatsApp Clone';
 
+				// verificando se o user tem nome para colocá-lo na tela
+				this.el.inputNamePanelEditProfile.innerHTML = data.name;
+
 				// verificando se o user tem uma foto para colocá-la na tela
 				if (data.photo) 
 				{
@@ -60,11 +63,27 @@ export class WhatsAppController
 
 			});
 
-			// a tela de conversa do app só volta a aprecer após estar no firebase
-			this.el.appContent.css({
-				display:'flex'
+			// recebendo os dados da solução da promessa acima caso bem sucedida
+			this._user.name = response.user.displayName;
+			this._user.email = response.user.email;
+			this._user.photo = response.user.photoURL;
+
+			// salvando no BD
+			this._user.save().then(() => {
+
+				// a tela de conversa do app só volta a aprecer após estar no firebase
+				this.el.appContent.css({
+					display:'flex'
+
+				});
 
 			});
+			// .catch(err => {
+
+
+			// });
+
+			
 
 		}).catch(err => {
 			console.log('err', err);

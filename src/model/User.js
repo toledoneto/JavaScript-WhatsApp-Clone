@@ -27,17 +27,17 @@ export class User extends Model
 
 		return new Promise((s, f) => {
 
-			// a Promise vai retornar o documento salvo no firebase
-			User.findByEmail(id).get().then(doc => {
-
+			// usando o onSnapshot para manter escutando na espera de alguma att e relfeti-la
+			// na tela quando necessário
+			User.findByEmail(id).onSnapshot(doc => {
+				
 				this.fromJSON(doc.data());
 
-			})
-			.catch(err => {
-				f(err);
+				s(doc);
+
 			});
 
-		})
+		});
 
 	}
 

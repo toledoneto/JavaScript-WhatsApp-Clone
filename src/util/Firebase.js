@@ -17,8 +17,9 @@ export class Firebase
 	{
 
 		// veririfcando se o Firebase já está inicializado para evitar que se tente
-		// inicializar duas vezes
-		if (!this._initialized) 
+		// inicializar duas vezes. Colocamos na var window para que seja global
+		// e, assim, poder ser acessada e ter o mesmo valor em outras chamadas
+		if (!window._initializedFirebase) 
 		{
 
 			firebase.initializeApp(this._config);
@@ -28,7 +29,7 @@ export class Firebase
 				timestampsInSnapshots: true
 			});
 
-			this._initialized = true;
+			window._initializedFirebase = true;
 
 		}
 

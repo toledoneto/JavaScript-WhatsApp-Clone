@@ -2,6 +2,7 @@ import {Format} from './../util/Format';
 import {CameraController} from './CameraController';
 import {MicrophoneController} from './MicrophoneController';
 import {DocumentPreviewController} from './DocumentPreviewController';
+import {Firebase} from './../util/Firebase';
 
 export class WhatsAppController
 {
@@ -17,6 +18,9 @@ export class WhatsAppController
 
 		// método para inciar todos os eventos criados
 		this.initEvents();
+
+		// chamando o Firebase
+		this._firebase = new Firebase();
 
 	}
 

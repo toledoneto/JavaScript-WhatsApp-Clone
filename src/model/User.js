@@ -65,4 +65,16 @@ export class User extends Model
 		return User.getRef().doc(email);
 	}
 
+	addContact(contact)
+	{
+
+		// usando btoa para passar o email para base64 e não ter problema com . e @
+		return User.getRef()
+			.doc(this.email)
+			.collection('contacts')
+			.doc(btoa(contact.email))
+			.set(contact.toJSON());
+
+	}
+
 }

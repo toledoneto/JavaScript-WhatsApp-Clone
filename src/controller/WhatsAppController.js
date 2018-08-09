@@ -164,7 +164,29 @@ export class WhatsAppController
 
 			e.preventDefault();
 
+			// recebendo os dados do formulário de inserção de contato
 			let formData = new FormData(this.el.formPanelAddContact);
+
+			// novo contato que será add
+			let contact = new User(formData.get('email'));
+
+			contact.on('datachange', data => {
+
+				// se o user existe
+				if (data.name) 
+				{
+
+					this._user.addContact(contact).then(() => {
+
+						this.el.btnClosePanelAddContact.click();
+						console.log('Contato foi adicionado com sucesso!');
+						
+					});
+
+				} else {
+					console.error("Usuário não encontrado")
+				}
+			});
 
 		});
 

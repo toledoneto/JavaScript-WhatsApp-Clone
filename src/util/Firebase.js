@@ -9,6 +9,7 @@ export class Firebase
 
 		this._config = {'your firebase data'};
 
+
 		this.init();
 
 	}

@@ -10,6 +10,12 @@ export class WhatsAppController
 	constructor()
 	{
 
+		// criando obj Firebase
+		this._firebase = new Firebase();
+
+		// método de autenticação de user
+		this.initAuth();
+
 		this.elementsPrototype();
 
 		// metodo para carregar os 75 ids principais do projeto
@@ -19,8 +25,22 @@ export class WhatsAppController
 		// método para inciar todos os eventos criados
 		this.initEvents();
 
-		// chamando o Firebase
-		this._firebase = new Firebase();
+	}
+
+	initAuth()
+	{
+
+		this._firebase.initAuth().then(response => {
+			
+			this._user = response.user;
+
+			this.el.appContent.css({
+				display:'flex'
+			});
+
+		}).catch(err => {
+			console.log('err', err);
+		});
 
 	}
 

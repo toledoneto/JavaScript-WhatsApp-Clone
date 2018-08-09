@@ -7,7 +7,7 @@ export class Firebase
 	constructor()
 	{
 
-		this._config = {'your data from firebase'};
+		this._config = {'your firebase data'};
 
 		this.init();
 
@@ -47,6 +47,33 @@ export class Firebase
 	{
 
 		return firebase.storage();
+
+	}
+
+	initAuth()
+	{
+
+		return new Promise((s,f) => {
+
+			// add o provedor de acesso, no caso será o Google. Pode ser feito com linkedin,
+			// FB etc, porém o programador de criar uma ligação com esses outros provedores
+			let provider = new firebase.auth.GoogleAuthProvider();
+
+			firebase.auth().signInWithPopup(provider).then(result => {
+
+				let token = result.credential.accessToken;
+				let user = result.user;
+
+				s({
+					user, 
+					token
+				});
+
+			}).catch(err => {
+				f(err);
+			});
+
+		});
 
 	}
 

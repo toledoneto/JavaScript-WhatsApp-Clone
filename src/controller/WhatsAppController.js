@@ -228,15 +228,21 @@ export class WhatsAppController
 				
 				let data = doc.data();
 				data.id = doc.id;
-				let message = new Message();
+				
+				if (!this.el.panelMessagesContainer.getElementById('#' + String(data.id))) 
+				{
 
-				message.fromJSON(data);
+					let message = new Message();
 
-				let me = (data.from === this._user.email);
+					message.fromJSON(data);
 
-				let view = message.getViewElement(me);
+					let me = (data.from === this._user.email);
 
-				this.el.panelMessagesContainer.appendChild(view);
+					let view = message.getViewElement(me);
+
+					this.el.panelMessagesContainer.appendChild(view);
+
+				}
 
 			});
 

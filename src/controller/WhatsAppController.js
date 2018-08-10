@@ -198,7 +198,7 @@ export class WhatsAppController
 		{
 
 			Message.getRef(this._contactActive.chatId).onSnapshot(() => {});
-			
+
 		}
 
 		// verificando qual contato está na conversa ativa naquele momento
@@ -227,6 +227,7 @@ export class WhatsAppController
 			docs.forEach(doc => {
 				
 				let data = doc.data();
+				data.id = doc.id;
 				let message = new Message();
 
 				message.fromJSON(data);

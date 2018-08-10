@@ -194,6 +194,14 @@ export class WhatsAppController
 	setActiveChat(contact)	
 	{
 
+		// ao ativar uma nova conversa, é bom que desativemos os listeners
+		// das outras conversa, senão corremos o risco de sobrecarregar o app
+		// e causar lentidão
+		if (this._contactActive) 
+		{
+			Message.getRef(this._contactActive.chatId).onSnapshot(()=>{});
+		}
+
 		// verificando qual contato está na conversa ativa naquele momento
 		this._contactActive = contact;
 
@@ -210,6 +218,42 @@ export class WhatsAppController
 		this.el.home.hide();
 		this.el.main.css({
 			display: 'flex'
+		});
+
+		// carregando a ref da msg para mostrar em tempo real segundo o id
+		// da conversar ativa e ordenando pelo timeStamp
+		Message.getRef(this._contactActive.chatId).orderBy('timeStamp')
+		.onSnapshot(docs => {
+
+			this.el.panelMessagesContainer.innerHTML = '';
+
+			docs.forEach(doc => {
+				
+				let data = doc.data();
+				data.id = doc.id;
+
+				// verificando se a msg já foi escrita para não repetir
+				if(!this.el.panelMessagesContainer.querySelector('#'+data.id))
+				{
+
+					let message = new Message();
+
+					message.fromJSON(data);
+
+					// vê se o atributo from é = email do user para descobrir
+					// se a msg em questão foi enviada ou recebida
+					let me = (data.from === this._user.email);
+
+					// método espera que informemos se a msg foi enviada ou recebida
+					// pela var me acima
+					let view = message.getViewElement(me);
+
+					this.el.panelMessagesContainer.appendChild(view);
+
+				}
+
+			});
+
 		});
 
 	}

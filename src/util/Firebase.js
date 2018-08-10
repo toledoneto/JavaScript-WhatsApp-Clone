@@ -7,6 +7,7 @@ export class Firebase
 	constructor()
 	{
 
+		
 		this._config = {' your Firebase data '};
 
 

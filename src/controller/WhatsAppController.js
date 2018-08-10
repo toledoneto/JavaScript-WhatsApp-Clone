@@ -194,6 +194,7 @@ export class WhatsAppController
 	setActiveChat(contact)	
 	{
 
+		// fecha todos os listeners que não forem da coversa ativa na tela no momento
 		if (this._contactActive) 
 		{
 
@@ -228,18 +229,30 @@ export class WhatsAppController
 				
 				let data = doc.data();
 				data.id = doc.id;
+
+				// se o primeiro índice do id for um número, colocamos em UNICODE
+				if (typeof parseInt(data.id[0]) === 'number') 
+				{
+
+					data.id = '\\3'+data.id;
+
+				}
 				
-				if (!this.el.panelMessagesContainer.getElementById('#' + String(data.id))) 
+				// verifica se a msg com o id abaixo já não está na tela para não
+				// fica apagando tds as msg e colocando-as novamente
+				if (!this.el.panelMessagesContainer.querySelector('#' + data.id)) 
 				{
 
 					let message = new Message();
 
 					message.fromJSON(data);
 
+					// descobrir se a msg foi enviada ou recbida por mim
 					let me = (data.from === this._user.email);
 
 					let view = message.getViewElement(me);
 
+					// coloca a msg na tela de conversa
 					this.el.panelMessagesContainer.appendChild(view);
 
 				}

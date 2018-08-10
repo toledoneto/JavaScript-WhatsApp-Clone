@@ -220,10 +220,21 @@ export class WhatsAppController
 			display: 'flex'
 		});
 
+		this.el.panelMessagesContainer.innerHTML = '';
+
 		Message.getRef(this._contactActive.chatId).orderBy('timeStamp')
 		.onSnapshot(docs => {
 
-			this.el.panelMessagesContainer.innerHTML = '';
+			// var para ver se o scroll está no topo
+			let scrollTop = this.el.panelMessagesContainer.scrollTop;
+
+			// limite que o scroll pode atingir
+			let scrollTopMax = (this.el.panelMessagesContainer.scrollHeight -
+							    this.el.panelMessagesContainer.offsetHeight);
+
+			// var boleana que indica true se o scroll estiver na posição
+			// mais baixa da tela, sendo assim ela tem que descer com nova msg
+			let autoScroll = (scrollTop >= scrollTopMax);
 
 			docs.forEach(doc => {
 				
@@ -231,16 +242,16 @@ export class WhatsAppController
 				data.id = doc.id;
 
 				// se o primeiro índice do id for um número, colocamos em UNICODE
-				if (typeof parseInt(data.id[0]) === 'number') 
-				{
+				// if (typeof parseInt(data.id[0]) === 'number') 
+				// {
 
-					data.id = '\\3'+data.id;
+				// 	data.id = '\\3'+data.id;
 
-				}
+				// }
 				
 				// verifica se a msg com o id abaixo já não está na tela para não
 				// fica apagando tds as msg e colocando-as novamente
-				if (!this.el.panelMessagesContainer.querySelector('#' + data.id)) 
+				if (!this.el.panelMessagesContainer.querySelector('#_' + data.id)) 
 				{
 
 					let message = new Message();
@@ -258,6 +269,20 @@ export class WhatsAppController
 				}
 
 			});
+
+			// precisa descer a tela? Ou seja, o scroll está 100% em baixo?
+			if (autoScroll) 
+			{
+				
+				this.el.panelMessagesContainer.scrollTop =
+				(this.el.panelMessagesContainer.scrollHeight -
+							    this.el.panelMessagesContainer.offsetHeight);
+
+			} else {
+
+				this.el.panelMessagesContainer.scrollTop = scrollTop;
+
+			}
 
 		});
 

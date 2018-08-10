@@ -7,7 +7,7 @@ export class Firebase
 	constructor()
 	{
 
-		this._config = {'your firebase data'};
+		this._config = {' your Firebase data '};
 
 
 		this.init();

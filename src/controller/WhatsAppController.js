@@ -4,6 +4,7 @@ import {MicrophoneController} from './MicrophoneController';
 import {DocumentPreviewController} from './DocumentPreviewController';
 import {Firebase} from './../util/Firebase';
 import {User} from './../model/User';
+import {Chat} from './../model/Chat';
 
 export class WhatsAppController
 {
@@ -173,6 +174,8 @@ export class WhatsAppController
 				// ao clicar numa conversa, abre-se a tela de bate-papo
 				div.on('click', e =>{
 
+					console.log(contact.chatId);
+
 					this.el.activeName.innerHTML = contact.name;
 					this.el.activeStatus.innerHTML = contact.status;
 
@@ -286,13 +289,29 @@ export class WhatsAppController
 				if (data.name) 
 				{
 
-					this._user.addContact(contact).then(() => {
+					// ao add uma conversa, cria o chat se ele n existe ainda
+					Chat.createIfNotExists(this._user.email, contact.email).then(chat => {
+
+						// cria o id da conversa
+						contact.chatId = chat.id;
+
+						// coloca o id da conversa no seu user
+						this._user.chatId = chat.id;
+
+						// coloca o id da conversa no user do outro através
+						// do merge JSON de addContact
+						contact.addContact(this._user)
+						
+						this._user.addContact(contact).then(() => {
 
 						this.el.btnClosePanelAddContact.click();
 						console.log('Contato foi adicionado com sucesso!');
 
+						});
+
 					});
 
+					
 				} else {
 					console.error("Usuário não encontrado")
 				}

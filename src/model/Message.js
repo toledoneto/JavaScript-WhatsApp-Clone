@@ -352,19 +352,23 @@ export class Message extends Model
 
             uploadTask.on('state_changed', e => {
 
-                console.info('upload', e);
+                // console.info('upload', e);
 
             }, err => {
                 console.error(err)
             }, () => {
-                Message.send(
-                    chatId, 
-                    from, 
-                    'image', 
-                    uploadTask.snapshot.downloadURL
-                ).then(() => {
-                    s();
+
+                uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+                    Message.send(
+                        chatId, 
+                        from, 
+                        'image', 
+                        downloadURL                    
+                    ).then(() => {
+                        s();
+                    });
                 });
+         
             });
 
         });

@@ -253,20 +253,34 @@ export class WhatsAppController
 
 				message.fromJSON(data);
 
+				// descobrir se a msg foi enviada ou recbida por mim
+				let me = (data.from === this._user.email);
+
 				// verifica se a msg com o id abaixo já não está na tela para não
 				// fica apagando tds as msg e colocando-as novamente
 				if (!this.el.panelMessagesContainer.querySelector('#_' + data.id)) 
 				{
 
-					// descobrir se a msg foi enviada ou recbida por mim
-					let me = (data.from === this._user.email);
+					// se a msg enviada não for do user do app, quer dizer que
+					// foi do outro participante da conver, então o outro
+					// leu as msgs anteriores já enviadas
+					if (!me) 
+					{
+
+						doc.ref.set({
+							status: 'read'
+						}, {
+							merge: true
+						});
+
+					}
 
 					let view = message.getViewElement(me);
 
 					// coloca a msg na tela de conversa
 					this.el.panelMessagesContainer.appendChild(view);
 
-				} else {
+				} else if (me){
 					// caso a msg já esteja na tela mas houme mudança de status
 
 					let msgEl = this.el.panelMessagesContainer.querySelector('#_' + data.id);

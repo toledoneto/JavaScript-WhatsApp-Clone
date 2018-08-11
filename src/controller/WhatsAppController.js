@@ -249,14 +249,14 @@ export class WhatsAppController
 
 				// }
 				
+				let message = new Message();
+
+				message.fromJSON(data);
+
 				// verifica se a msg com o id abaixo já não está na tela para não
 				// fica apagando tds as msg e colocando-as novamente
 				if (!this.el.panelMessagesContainer.querySelector('#_' + data.id)) 
 				{
-
-					let message = new Message();
-
-					message.fromJSON(data);
 
 					// descobrir se a msg foi enviada ou recbida por mim
 					let me = (data.from === this._user.email);
@@ -265,6 +265,14 @@ export class WhatsAppController
 
 					// coloca a msg na tela de conversa
 					this.el.panelMessagesContainer.appendChild(view);
+
+				} else {
+					// caso a msg já esteja na tela mas houme mudança de status
+
+					let msgEl = this.el.panelMessagesContainer.querySelector('#_' + data.id);
+
+					msgEl.querySelector('.message-status').innerHTML = message.getStatusViewElement()
+					.outerHTML;
 
 				}
 

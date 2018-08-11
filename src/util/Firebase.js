@@ -10,7 +10,15 @@ export class Firebase
 		
 		this._config = {' your Firebase data '};
 
-		
+		// this._config = {
+		//     apiKey: "AIzaSyBTfD3-N_dpPvJzgaFc3Jbl9UynNfzpJLU",
+		//     authDomain: "whatsapp-clone-29698.firebaseapp.com",
+		//     databaseURL: "https://whatsapp-clone-29698.firebaseio.com",
+		//     projectId: "whatsapp-clone-29698",
+		//     // storageBucket: "whatsapp-clone-29698.appspot.com",
+		//     storageBucket: "gs://whatsapp-clone-29698.appspot.com",
+		//     messagingSenderId: "113811368963"
+		// };
 
 
 		this.init();

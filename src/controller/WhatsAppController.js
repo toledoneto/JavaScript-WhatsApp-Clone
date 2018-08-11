@@ -474,12 +474,10 @@ export class WhatsAppController
 
 		this.el.inputPhoto.on('change', e=>{
 
-			console.log(this.el.inputPhoto.files);
-
 			// como temos uma coleção, precisamos usar o spread para transformar em array
 			[...this.el.inputPhoto.files].forEach(file=>{
 
-				console.log(file);
+				Message.sendImage(this._contactActive.chatId, this._user.email, file);
 
 			});
 

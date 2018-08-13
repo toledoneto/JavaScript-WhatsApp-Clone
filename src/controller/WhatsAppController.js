@@ -31,6 +31,50 @@ export class WhatsAppController
 		// método para inciar todos os eventos criados
 		this.initEvents();
 
+		// verifica se o user autorizou notificações de novas msg em caso de tela minimizada
+		this.checkNotifications();
+
+	}
+
+	checkNotifications()
+	{
+
+		if (typeof Notification === 'function') 
+		{
+
+			if (Notification.permission !== 'granted') 
+			{
+
+				this.el.alertNotificationPermission.show();
+
+			} else {
+
+				this.el.alertNotificationPermission.hide();
+
+			}
+
+			this.el.alertNotificationPermission.on('click', e => {
+
+				Notification.requestPermission(permission => {
+					if (permission === 'granted') 
+					{
+
+						this.el.alertNotificationPermission.hide();
+						console.info('Notificações permitidas!');
+
+					}
+				})
+			})
+ 
+		}
+
+	}
+
+	notification()
+	{
+
+		
+		
 	}
 
 	initAuth()

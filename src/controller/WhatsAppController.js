@@ -15,6 +15,8 @@ export class WhatsAppController
 
 	constructor()
 	{
+		// notifica o navegador que o foco está na janela
+		this._active = true;
 
 		// criando obj Firebase
 		this._firebase = new Firebase();
@@ -70,11 +72,30 @@ export class WhatsAppController
 
 	}
 
-	notification()
+	notification(data)
 	{
 
-		
-		
+		if (Notification.permission === 'granted' && !this._active) 
+		{
+
+			let n = new Notification(this._contactActive.name, {
+
+				icon: this._contactActive.photo,
+				body: data.content
+			});
+
+			let sound = new Audio('./audio/alert.mp3');
+			sound.currentTime = 0;
+			sound.play();
+
+			setTimeout(() => {
+
+				if (n) n.close();
+
+			}, 3000);
+
+		}
+
 	}
 
 	initAuth()
@@ -269,6 +290,8 @@ export class WhatsAppController
 
 		this.el.panelMessagesContainer.innerHTML = '';
 
+		this._messagesReceived = [];
+
 		Message.getRef(this._contactActive.chatId).orderBy('timeStamp')
 		.onSnapshot(docs => {
 
@@ -302,6 +325,14 @@ export class WhatsAppController
 
 				// descobrir se a msg foi enviada ou recbida por mim
 				let me = (data.from === this._user.email);
+
+				if (!me && this._messagesReceived.filter(id => { return (id === data.id ) }).length === 0) 
+				{
+
+					this.notification(data);
+					this._messagesReceived.push(data.id);
+
+				}
 
 				let view = message.getViewElement(me);
 
@@ -403,6 +434,14 @@ export class WhatsAppController
 
 	initEvents()
 	{
+
+		window.addEventListener('focus', e=>{
+			this._active = true;
+		});
+
+		window.addEventListener('blur', e=>{
+			this._active = false;
+		});
 
 		this.el.inputSearchContacts.on('keyup', e => {
 

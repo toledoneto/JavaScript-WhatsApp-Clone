@@ -259,6 +259,8 @@ export class WhatsAppController
 				// descobrir se a msg foi enviada ou recbida por mim
 				let me = (data.from === this._user.email);
 
+				let view = message.getViewElement(me);
+
 				// verifica se a msg com o id abaixo já não está na tela para não
 				// fica apagando tds as msg e colocando-as novamente
 				if (!this.el.panelMessagesContainer.querySelector('#_' + data.id)) 
@@ -278,17 +280,15 @@ export class WhatsAppController
 
 					}
 
-					let view = message.getViewElement(me);
-
 					// coloca a msg na tela de conversa
 					this.el.panelMessagesContainer.appendChild(view);
 
 				} else {
 
-					let view = message.getViewElement(me);
+					let parent = this.el.panelMessagesContainer.querySelector('#_' + data.id)
+					.parentNode;
 
-					this.el.panelMessagesContainer.querySelector('#_' + data.id)
-					.innerHTML = view.innerHTML;
+					parent.replaceChild(view, this.el.panelMessagesContainer.querySelector('#_' + data.id));
 
 				}
 
@@ -301,6 +301,39 @@ export class WhatsAppController
 
 					msgEl.querySelector('.message-status').innerHTML = message.getStatusViewElement()
 					.outerHTML;
+
+				}
+
+				if (message.type === 'contact') 
+				{
+
+					view.querySelector('.btn-message-send').on('click', e => {
+
+						// ao add uma conversa, cria o chat se ele n existe ainda
+						Chat.createIfNotExists(this._user.email, message.content.email).then(chat => {
+
+							let contact = new User(message.content.email);
+
+							contact.on('datachange', data => {
+								// cria o id da conversa
+								contact.chatId = chat.id;
+
+								this._user.addContact(contact);
+
+								// coloca o id da conversa no seu user
+								this._user.chatId = chat.id;
+
+								// coloca o id da conversa no user do outro através
+								// do merge JSON de addContact
+								contact.addContact(this._user);
+
+								this.setActiveChat(contact);
+								
+							});
+
+						});
+
+					});
 
 				}
 

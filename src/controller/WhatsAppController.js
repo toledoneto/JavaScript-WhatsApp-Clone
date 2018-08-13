@@ -6,6 +6,8 @@ import {Firebase} from './../util/Firebase';
 import {User} from './../model/User';
 import {Chat} from './../model/Chat';
 import {Message} from './../model/Message';
+import {Base64} from './../util/Base64';
+
 
 export class WhatsAppController
 {
@@ -280,7 +282,18 @@ export class WhatsAppController
 					// coloca a msg na tela de conversa
 					this.el.panelMessagesContainer.appendChild(view);
 
-				} else if (me){
+				} else {
+
+					let view = message.getViewElement(me);
+
+					this.el.panelMessagesContainer.querySelector('#_' + data.id)
+					.innerHTML = view.innerHTML;
+
+				}
+
+
+
+				if (this.el.panelMessagesContainer.querySelector('#_' + data.id) && me){
 					// caso a msg já esteja na tela mas houme mudança de status
 
 					let msgEl = this.el.panelMessagesContainer.querySelector('#_' + data.id);
@@ -641,7 +654,7 @@ export class WhatsAppController
 					});
 
 					// para ver o tipo do arqv e colocar no switch abaixo
-					console.log(file);
+					//console.log(file);
 
 					switch (file.type) 
 					{
@@ -680,7 +693,33 @@ export class WhatsAppController
 
 		this.el.btnSendDocument.on('click', e=>{
 
-			console.log('send document');
+			let file = this.el.inputDocument.files[0];
+			let base64 = this.el.imgPanelDocumentPreview.src;
+
+			console.log(base64)
+
+			if (file.type === 'application/pdf') 
+			{
+
+				Base64.toFile(base64).then(filePreview => {
+					Message.sendDocument(
+						this._contactActive.chatId,
+						this._user.email,
+						file, 
+						filePreview,
+						this.el.infoPanelDocumentPreview.innerHTML);
+				});
+
+			} else {
+
+				Message.sendDocument(
+					this._contactActive.chatId,
+					this._user.mail,
+					file);
+
+			}
+
+			this.el.btnClosePanelDocumentPreview.click();
 
 		});
 

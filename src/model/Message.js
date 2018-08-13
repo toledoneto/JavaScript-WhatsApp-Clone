@@ -27,6 +27,24 @@ export class Message extends Model
 	get status() { return this._data.status; }
 	set status(value) { return this._data.status = value; }
 
+    get info() { return this._data.info; }
+    set info(value) { return this._data.info = value; }
+
+    get fileType() { return this._data.fileType; }
+    set fileType(value) { return this._data.fileType = value; }
+
+    get filename() { return this._data.filename; }
+    set filename(value) { return this._data.filename = value; }
+
+    get size() { return this._data.size; }
+    set size(value) { return this._data.size = value; }
+
+    get from() { return this._data.from; }
+    set from(value) { return this._data.from = value; }
+
+    get preview() { return this._data.preview; }
+    set preview(value) { return this._data.preview = value; }
+
 	getViewElement(me=true)
 	{
 
@@ -141,13 +159,13 @@ export class Message extends Model
 					<div class="_3_7SH _1ZPgd">
                         <div class="_1fnMt _2CORf">
                             <a class="_1vKRe" href="#">
-                                <div class="_2jTyA" style="background-image: url()"></div>
+                                <div class="_2jTyA" style="background-image: url(${this.preview})"></div>
                                 <div class="_12xX7">
                                     <div class="_3eW69">
                                         <div class="JdzFp message-file-icon icon-doc-pdf"></div>
                                     </div>
                                     <div class="nxILt">
-                                        <span dir="auto" class="message-filename">Arquivo.pdf</span>
+                                        <span dir="auto" class="message-filename">${this.filename}</span>
                                     </div>
                                     <div class="_17viz">
                                         <span data-icon="audio-download" class="message-file-download">
@@ -165,9 +183,9 @@ export class Message extends Model
                                 </div>
                             </a>
                             <div class="_3cMIj">
-                                <span class="PyPig message-file-info">32 páginas</span>
-                                <span class="PyPig message-file-type">PDF</span>
-                                <span class="PyPig message-file-size">4 MB</span>
+                                <span class="PyPig message-file-info">${this.info}</span>
+                                <span class="PyPig message-file-type">${this.fileType}</span>
+                                <span class="PyPig message-file-size">${this.size}</span>
                             </div>
                             <div class="_3Lj_s">
                                 <div class="_1DZAH" role="button">
@@ -179,6 +197,10 @@ export class Message extends Model
                     </div>
 
 				`;
+
+                div.on('click', e => {
+                    window.open(this.content);
+                });
 				break;
 
 			case 'audio':
@@ -315,12 +337,14 @@ export class Message extends Model
                 from
             }).then(result => {
 
-                result.parent.doc(result.id).set({
+                let docRef = result.parent.doc(result.id);
+
+                docRef.set({
                     status: 'sent' // se a msg for enviada, att o status
                 }, {
                     merge: true // muda apenas o status, as demais info mantém
                 }).then(() => {
-                    s();
+                    s(docRef);
                 });
 
             });
@@ -343,7 +367,7 @@ export class Message extends Model
 
     }
 
-    static sendImage(chatId, from, file)
+    static upload(file, from)
     {
 
         return new Promise((s, f) => {
@@ -352,13 +376,86 @@ export class Message extends Model
 
             uploadTask.on('state_changed', e => {
 
-                // console.info('upload', e);
+                console.info('upload', e);
 
             }, err => {
-                console.error(err)
+                f(err)
             }, () => {
 
-                uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+                s(uploadTask.snapshot);
+         
+            });
+
+        });
+    }
+
+    static sendDocument(chatId, from, file, filePreview, info)
+    {
+
+        Message.send(chatId, from, 'document', '').then(msgRef => {
+
+            Message.upload(file, from).then(snapshot => {
+
+                snapshot.ref.getDownloadURL().then(downloadURL => {
+                    
+                    let downloadFile = downloadURL;
+
+                    if (filePreview) 
+                    {
+
+                        Message.upload(filePreview, from).then(snapshot2 => {
+
+                            snapshot2.ref.getDownloadURL().then(downloadURL2 => {
+
+                            let downloadPreview = downloadURL2;
+
+                                msgRef.set({
+
+                                    content: downloadFile,
+                                    preview: downloadPreview,
+                                    filename: file.name,
+                                    size: file.size,
+                                    fileType: file.type,
+                                    status: 'sent',
+                                    info
+
+                                }, {
+                                    merge: true
+                                });
+
+                            });
+                        });
+
+                    } else {
+
+                        msgRef.set({
+
+                            content: downloadFile,
+                            filename: file.name,
+                            size: file.size,
+                            fileType: file.type,
+                            status: 'sent'
+                        }, {
+                            merge: true
+                        });
+
+                    }
+                });
+            });
+
+        });
+
+    }
+
+
+    static sendImage(chatId, from, file)
+    {
+
+        return new Promise((s, f) => {
+
+            Message.upload(file, from).then(snapshot => {
+
+                snapshot.ref.getDownloadURL().then(downloadURL => {
                     Message.send(
                         chatId, 
                         from, 
@@ -368,7 +465,7 @@ export class Message extends Model
                         s();
                     });
                 });
-         
+
             });
 
         });
